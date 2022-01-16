@@ -1,21 +1,33 @@
 package io.github.lucasgm;
 
-import org.springframework.beans.factory.annotation.Value;
+import io.github.lucasgm.domain.entity.Client;
+import io.github.lucasgm.domain.repository.Clients;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @SpringBootApplication
 @RestController
 public class StoreApplication {
 
-    @Value("${application.name}")
-    private String applicationName;
+    @Bean
+    public CommandLineRunner init(@Autowired Clients clients) {
+        return args -> {
+            clients.save(new Client("Lucas"));
+            clients.save(new Client("Outro cliente"));
 
-    @GetMapping("/hello")
-    public String helloWorld() {
-        return applicationName;
+            List<Client> allClients = clients.getAll();
+            allClients.forEach(System.out::println);
+
+            List<Client> byName = clients.getByName("Outro");
+            byName.forEach(System.out::println);
+
+        };
     }
 
     public static void main(String[] args) {

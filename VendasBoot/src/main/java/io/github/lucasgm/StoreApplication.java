@@ -1,7 +1,7 @@
 package io.github.lucasgm;
 
 import io.github.lucasgm.domain.entity.Client;
-import io.github.lucasgm.domain.repository.Clients;
+import io.github.lucasgm.domain.repository.IClientsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,15 +16,15 @@ import java.util.List;
 public class StoreApplication {
 
     @Bean
-    public CommandLineRunner init(@Autowired Clients clients) {
+    public CommandLineRunner init(@Autowired IClientsRepository clients) {
         return args -> {
             clients.save(new Client("Lucas"));
             clients.save(new Client("Outro cliente"));
 
-            List<Client> allClients = clients.getAll();
+            List<Client> allClients = clients.findAll();
             allClients.forEach(System.out::println);
 
-            List<Client> byName = clients.getByName("Outro");
+            List<Client> byName = clients.findByNameContaining("Outro");
             byName.forEach(System.out::println);
 
         };

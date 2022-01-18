@@ -1,8 +1,16 @@
 package io.github.lucasgm.domain.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "CLIENTE")
 public class Client {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @Column(name = "nome", length = 100)
     private String name;
 
     public Client() {

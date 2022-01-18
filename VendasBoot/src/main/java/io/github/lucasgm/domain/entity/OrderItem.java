@@ -1,6 +1,8 @@
 package io.github.lucasgm.domain.entity;
 
-public class ItemPedido {
+import javax.persistence.*;
+
+public class OrderItem {
 
     private Integer id;
     private Order order;

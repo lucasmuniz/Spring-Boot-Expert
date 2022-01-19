@@ -1,6 +1,7 @@
 package io.github.lucasgm.domain.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "CLIENTE")
@@ -13,15 +14,13 @@ public class Client {
     @Column(name = "nome", length = 100)
     private String name;
 
+    @OneToMany(mappedBy = "client")
+    private Set<Order> orders;
+
     public Client() {
     }
 
     public Client(String name) {
-        this.name = name;
-    }
-
-    public Client(Integer id, String name) {
-        this.id = id;
         this.name = name;
     }
 
@@ -39,6 +38,14 @@ public class Client {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 
     @Override

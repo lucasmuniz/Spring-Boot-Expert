@@ -2,11 +2,23 @@ package io.github.lucasgm.domain.entity;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name = "ITEM_PEDIDO")
 public class OrderItem {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "PEDIDO_ID")
     private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "PRODUTO_ID")
     private Product product;
+
+    @Column(name = "QUANTIDADE")
     private Integer quantity;
 
     public Integer getId() {

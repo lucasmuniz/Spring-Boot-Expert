@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -49,6 +50,12 @@ public class OrderServiceImpl implements IOrderService {
         return order;
     }
 
+    @Override
+    @Transactional
+    public Optional<Order> getOrder(Integer id) {
+        return orderRepository.findByIdFetchItems(id);
+    }
+
     private List<OrderItem> convertItems(Order order, List<OrderItemDTO> items) {
         if (items.isEmpty()) {
             throw new BusinessException("Não é possível realizar um pedido sem items");
@@ -59,7 +66,6 @@ public class OrderServiceImpl implements IOrderService {
                     Product product = productsRepository
                             .findById(dto.getProduct())
                             .orElseThrow(() -> new BusinessException("Código de Produto inválido: " + dto.getProduct()));
-
 
                     OrderItem orderItem = new OrderItem();
                     orderItem.setQuantity(dto.getQuantity());

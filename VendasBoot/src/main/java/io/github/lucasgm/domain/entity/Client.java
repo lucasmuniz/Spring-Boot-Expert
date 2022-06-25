@@ -1,10 +1,16 @@
 package io.github.lucasgm.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "CLIENTE")
 public class Client {
@@ -16,57 +22,15 @@ public class Client {
     @Column(name = "nome", length = 100)
     private String name;
 
-    @Column(name="cpf", length = 11)
+    @Column(name = "cpf", length = 11)
     private String cpf;
 
     @JsonIgnore
     @OneToMany(mappedBy = "client")
     private Set<Order> orders;
 
-    public Client() {
-    }
-
     public Client(String name) {
         this.name = name;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

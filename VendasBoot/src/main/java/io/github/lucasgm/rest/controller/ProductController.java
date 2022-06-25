@@ -1,4 +1,4 @@
-package io.github.lucasgm.api.controller;
+package io.github.lucasgm.rest.controller;
 
 import io.github.lucasgm.domain.entity.Product;
 import io.github.lucasgm.domain.repository.IProductsRepository;

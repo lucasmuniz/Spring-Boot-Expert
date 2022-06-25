@@ -1,4 +1,4 @@
-package io.github.lucasgm.api.controller;
+package io.github.lucasgm.rest.controller;
 
 import io.github.lucasgm.domain.entity.Client;
 import io.github.lucasgm.domain.repository.IClientsRepository;
@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping("/api/clients")
 public class ClientController {
 
     private IClientsRepository clientsRepository;

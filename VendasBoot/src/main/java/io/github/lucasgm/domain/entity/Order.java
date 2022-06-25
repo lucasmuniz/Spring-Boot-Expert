@@ -1,5 +1,6 @@
 package io.github.lucasgm.domain.entity;
 
+import io.github.lucasgm.domain.enums.OrderStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,10 @@ public class Order {
 
     @Column(name = "TOTAL", precision = 20, scale = 2)
     private BigDecimal total;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS")
+    private OrderStatusEnum status;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private List<OrderItem> items;

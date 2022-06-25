@@ -4,11 +4,13 @@ import io.github.lucasgm.domain.entity.Client;
 import io.github.lucasgm.domain.entity.Order;
 import io.github.lucasgm.domain.entity.OrderItem;
 import io.github.lucasgm.domain.entity.Product;
+import io.github.lucasgm.domain.enums.OrderStatusEnum;
 import io.github.lucasgm.domain.repository.IClientsRepository;
 import io.github.lucasgm.domain.repository.IOrderItemRepository;
 import io.github.lucasgm.domain.repository.IOrderRepository;
 import io.github.lucasgm.domain.repository.IProductsRepository;
 import io.github.lucasgm.exception.BusinessException;
+import io.github.lucasgm.exception.OrderNotFoundException;
 import io.github.lucasgm.rest.dto.OrderDTO;
 import io.github.lucasgm.rest.dto.OrderItemDTO;
 import io.github.lucasgm.service.IOrderService;
@@ -41,6 +43,7 @@ public class OrderServiceImpl implements IOrderService {
         order.setTotal(orderDTO.getTotal());
         order.setOrderDate(LocalDate.now());
         order.setClient(client);
+        order.setStatus(OrderStatusEnum.REALIZADO);
 
         List<OrderItem> orderItems = convertItems(order, orderDTO.getItems());
         orderRepository.save(order);
@@ -54,6 +57,17 @@ public class OrderServiceImpl implements IOrderService {
     @Transactional
     public Optional<Order> getOrder(Integer id) {
         return orderRepository.findByIdFetchItems(id);
+    }
+
+    @Override
+    @Transactional
+    public void statusUpdate(Integer id, OrderStatusEnum status) {
+        orderRepository.findById(id)
+                .map(order -> {
+                            order.setStatus(status);
+                            return orderRepository.save(order);
+                        }
+                ).orElseThrow(() -> new OrderNotFoundException());
     }
 
     private List<OrderItem> convertItems(Order order, List<OrderItemDTO> items) {

@@ -15,7 +15,7 @@ public class StoreApplication {
     public CommandLineRunner commandLineRunner(@Autowired IClientsRepository clientsRepository){
         return args -> {
             Client client = new Client("Fulano");
-            clientsRepository.save(client);
+            //clientsRepository.save(client);
         };
     }
 

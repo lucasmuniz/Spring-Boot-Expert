@@ -1,5 +1,6 @@
 package io.github.lucasgm.rest.dto;
 
+import io.github.lucasgm.validation.NotEmptyList;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -11,10 +12,11 @@ import java.util.List;
 @Data
 public class OrderDTO {
 
-    @NotNull(message = "Informe o código do cliente")
+    @NotNull(message = "{campo.codigo-cliente.obrigatorio}")
     private Integer client;
-    @NotNull(message = "Informe o total do pedido")
+    @NotNull(message = "{campo.total-pedido.obrigatorio}")
     private BigDecimal total;
+    @NotEmptyList(message = "{campo.items-pedido.obrigatorio}")
     private List<OrderItemDTO> items;
 
 }

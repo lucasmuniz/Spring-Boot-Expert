@@ -1,0 +1,32 @@
+package io.github.lucasgm.domain.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Entity
+@Table(name = "USUARIO")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    @Column
+    @NotEmpty(message = "{campo.login.obrigatorio}")
+
+    private String login;
+
+    @Column
+    @NotEmpty(message = "{campo.senha.obrigatorio}")
+    private String password;
+
+    @Column
+    private boolean admin;
+}

@@ -14,6 +14,12 @@ import javax.validation.constraints.NotEmpty;
 @Table(name = "USUARIO")
 public class User {
 
+    public User(String login, String password, boolean admin) {
+        this.login = login;
+        this.password = password;
+        this.admin = admin;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

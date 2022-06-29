@@ -1,11 +1,11 @@
-package io.github.lucasgm;
+package io.github.lucasgm.security.jwt;
 
 import io.github.lucasgm.domain.entity.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,7 +13,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Service
-public class JWTService {
+public class JwtService {
 
     @Value("${security.jwt.expiration}")
     private String expiration;
@@ -33,13 +33,29 @@ public class JWTService {
                 .compact();
     }
 
-    public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(StoreApplication.class);
-        JWTService service = context.getBean(JWTService.class);
-        User user = new User("lucas", "123", false);
-        String token = service.tokenGen(user);
-        System.out.println(token);
+    private Claims getClaims(String token) throws ExpiredJwtException {
+        return Jwts
+                .parser()
+                .setSigningKey(signKey)
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
+    public boolean validToken(String token) {
+        try {
+            Claims claims = getClaims(token);
+            Date dataExpiracao = claims.getExpiration();
+            LocalDateTime data =
+                    dataExpiracao.toInstant()
+                            .atZone(ZoneId.systemDefault()).toLocalDateTime();
+            return !LocalDateTime.now().isAfter(data);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getUserLogin(String token) throws ExpiredJwtException{
+        return getClaims(token).getSubject();
     }
 
 }

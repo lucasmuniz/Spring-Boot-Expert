@@ -2,6 +2,7 @@ package io.github.lucasgm.service.impl;
 
 import io.github.lucasgm.domain.entity.User;
 import io.github.lucasgm.domain.repository.IUserRepository;
+import io.github.lucasgm.exception.InvalidPasswordException;
 import io.github.lucasgm.rest.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,15 @@ public class UserServiceImpl implements UserDetailsService {
     public UserDTO save(User user) {
         userRepository.save(user);
         return new UserDTO(user.getLogin());
+    }
+
+    public UserDetails authenticate(User user) {
+        UserDetails userDetails = loadUserByUsername(user.getLogin());
+        boolean ok = encoder.matches(user.getPassword(), userDetails.getPassword());
+        if (ok) {
+            return userDetails;
+        }
+        throw new InvalidPasswordException();
     }
 
     @Override

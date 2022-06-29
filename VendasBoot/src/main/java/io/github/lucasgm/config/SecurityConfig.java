@@ -1,5 +1,7 @@
 package io.github.lucasgm.config;
 
+import io.github.lucasgm.security.jwt.JwtAuthFilter;
+import io.github.lucasgm.security.jwt.JwtService;
 import io.github.lucasgm.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,14 +10,20 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private JwtService jwtService;
     @Bean
     public PasswordEncoder passwordEncoder() {
         //criptografia
@@ -30,23 +38,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
+    @Bean
+    public OncePerRequestFilter jwtFilter(){
+        return new JwtAuthFilter(jwtService, userService);
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //autorização
         http
-                .csrf().disable()
-                .authorizeRequests()
-                    .antMatchers("/api/clients/**")
-                        .hasAnyRole("USER", "ADMIN")
-                    .antMatchers("/api/orders/**")
-                        .hasAnyRole("USER","ADMIN")
-                    .antMatchers("/api/products/**")
-                        .hasRole("ADMIN")
-                    .antMatchers(HttpMethod.POST, "/api/users/**")
-                        .permitAll()
-                    .anyRequest().authenticated()
-                .and()
-                .httpBasic()
-        ;
+            .csrf().disable()
+            .authorizeRequests()
+                .antMatchers("/api/clients/**")
+                    .hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/orders/**")
+                    .hasAnyRole("USER","ADMIN")
+                .antMatchers("/api/products/**")
+                    .hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/users/**")
+                    .permitAll()
+                .anyRequest().authenticated()
+            .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+            .headers().frameOptions().disable();
+
     }
 }

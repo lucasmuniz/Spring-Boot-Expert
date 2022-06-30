@@ -23,7 +23,7 @@ public class User {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column
@@ -31,7 +31,7 @@ public class User {
 
     private String login;
 
-    @Column
+    @Column (name = "SENHA")
     @NotEmpty(message = "{campo.senha.obrigatorio}")
     private String password;
 
